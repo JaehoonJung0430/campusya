@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 데이터베이스
+  postgres:
+    image: postgres:15-alpine
+    container_name: campusya-postgres
+    environment:
+      POSTGRES_DB: campusya
+      POSTGRES_USER: campusya
+      POSTGRES_PASSWORD: campusya123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - campusya-network
+    restart: unless-stopped
+
+  # Redis 캐시
+  redis:
+    image: redis:7-alpine
+    container_name: campusya-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - campusya-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # pgAdmin (PostgreSQL 관리도구) - 선택사항
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: campusya-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@campusya.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - campusya-network
+    restart: unless-stopped
+    profiles:
+      - tools  # docker-compose --profile tools up 으로 실행
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  campusya-network:
+    driver: bridge

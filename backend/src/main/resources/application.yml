@@ -1,0 +1,132 @@
+# 기본 설정 (모든 프로파일 공통)
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+
+spring:
+  application:
+    name: campusya
+  
+  profiles:
+    active: local
+  
+  # 데이터베이스 설정
+  datasource:
+    url: jdbc:postgresql://localhost:5432/campusya
+    username: campusya
+    password: campusya123
+    driver-class-name: org.postgresql.Driver
+  
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    format-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: true
+  
+  # Redis 설정
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+  
+  # 이메일 설정 (홍익대 이메일 인증용)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME:}
+    password: ${EMAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# OpenAI API 설정
+openai:
+  api-key: ${OPENAI_API_KEY:}
+  model: gpt-3.5-turbo
+  max-tokens: 1000
+
+# JWT 설정
+jwt:
+  secret: ${JWT_SECRET:campusya-secret-key-for-development-only}
+  expiration: 86400000 # 24시간 (밀리초)
+
+# 홍익대학교 관련 설정
+hongik:
+  email-domains:
+    - hongik.ac.kr
+    - g.hongik.ac.kr
+  mascot:
+    name: "홍익이"
+    personality: "친근하고 도움이 되는 홍익대학교 학생 조력자"
+
+# 로깅 설정
+logging:
+  level:
+    com.hongik.campusya: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# API 문서 설정
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /swagger
+    operations-sorter: method
+
+---
+# 로컬 개발 환경
+spring:
+  config:
+    activate:
+      on-profile: local
+  
+logging:
+  level:
+    root: INFO
+    com.hongik.campusya: DEBUG
+
+---
+# 프로덕션 환경
+spring:
+  config:
+    activate:
+      on-profile: prod
+  
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD:}
+
+logging:
+  level:
+    root: WARN
+    com.hongik.campusya: INFO
