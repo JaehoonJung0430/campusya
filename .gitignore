@@ -137,3 +137,35 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Java & Spring Boot
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+build/
+target/
+.gradle/
+.mvn/
+
+# Spring Boot
+application-local.yml
+application-dev.yml
+application-prod.yml
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
