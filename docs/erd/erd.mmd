@@ -1,127 +1,104 @@
 erDiagram
-    SCHOOLS {
-        SERIAL id PK "PK"
-        VARCHAR name "학교명"
-        VARCHAR campus "캠퍼스"
-        VARCHAR domain "도메인 (UNIQUE)"
+    users {
+        UUID id PK
+        BOOLEAN email_verified
+        VARCHAR profile_image_url
+        TEXT bio
+        TIMESTAMP last_login_at
+        TIMESTAMP ban_until
+        TEXT ban_reason
     }
-    DEPARTMENTS {
-        SERIAL id PK "PK"
-        INT school_id FK "FK -> schools.id"
-        VARCHAR name
-    }
-    USERS {
-        UUID id PK "PK"
-        INT school_id FK "FK -> schools.id"
-        INT department_id FK "FK -> departments.id"
-        VARCHAR email "UNIQUE"
-        VARCHAR password
-        VARCHAR nickname
-        ENUM role
-        ENUM status
-        DATE birth_date
-        ENUM gender
-        SMALLINT admission_year
-        VARCHAR student_number
+
+    files {
+        UUID id PK
+        UUID uploader_id FK
+        VARCHAR original_name
+        VARCHAR stored_name
+        BIGINT file_size
+        VARCHAR mime_type
+        VARCHAR s3_url
+        ENUM file_type
         TIMESTAMP created_at
-        TIMESTAMP updated_at
     }
-    BOARDS {
-        SERIAL id PK "PK"
-        INT school_id FK "FK -> schools.id"
-        VARCHAR name "Unique per school"
-        TEXT description
-        BOOLEAN is_public
+
+    post_files {
+        SERIAL id PK
+        UUID post_id FK
+        UUID file_id FK
         INT sort_order
     }
-    POSTS {
-        UUID id PK "PK"
-        INT board_id FK "FK -> boards.id"
-        UUID user_id FK "FK -> users.id"
+
+    posts {
+        UUID id PK
+        INT view_count
+        INT comment_count
+        ENUM status
+        BOOLEAN is_pinned
+    }
+
+    notifications {
+        UUID id PK
+        UUID user_id FK
+        ENUM type
         VARCHAR title
         TEXT content
-        BOOLEAN anonymous_flag
-        VARCHAR anonymous_nickname
-        INT likes_count
+        UUID related_id
+        ENUM related_type
+        BOOLEAN is_read
         TIMESTAMP created_at
-        TIMESTAMP updated_at
+        TIMESTAMP read_at
     }
-    COMMENTS {
-        UUID id PK "PK"
-        UUID post_id FK "FK -> posts.id"
-        UUID user_id FK "FK -> users.id"
-        UUID parent_comment_id "NULL이면 일반 댓글"
-        TEXT content
-        BOOLEAN anonymous_flag
-        VARCHAR anonymous_nickname
-        INT likes_count
+
+    reports {
+        UUID id PK
+        UUID reporter_id FK
+        UUID target_id
+        ENUM target_type
+        ENUM reason
+        TEXT description
+        ENUM status
+        UUID handler_id FK
+        TEXT resolution
         TIMESTAMP created_at
+        TIMESTAMP resolved_at
     }
-    POST_LIKES {
-        SERIAL id PK "PK"
-        UUID post_id FK "FK -> posts.id"
-        UUID user_id FK "FK -> users.id"
-        TIMESTAMP created_at
-    }
-    COMMENT_LIKES {
-        SERIAL id PK "PK"
-        UUID comment_id FK "FK -> comments.id"
-        UUID user_id FK "FK -> users.id"
+
+    tags {
+        SERIAL id PK
+        VARCHAR name UNIQUE
+        INT usage_count
         TIMESTAMP created_at
     }
-    CHAT_SESSIONS {
-        UUID id PK "PK"
-        UUID user_id FK "FK -> users.id"
+
+    post_tags {
+        SERIAL id PK
+        UUID post_id FK
+        INT tag_id FK
+    }
+
+    user_activity_logs {
+        UUID id PK
+        UUID user_id FK
+        ENUM action_type
+        UUID target_id
+        JSONB metadata
         TIMESTAMP created_at
-        VARCHAR Field
-    }
-    CHAT_LOGS {
-        UUID id PK "PK"
-        UUID session_id FK "FK -> chat_sessions.id"
-        TEXT question
-        TEXT answer
-        TEXT summary
-        JSONB source
-        TIMESTAMP created_at
-    }
-    USER_CONSENTS {
-        SERIAL id PK "PK"
-        UUID user_id FK "FK -> users.id"
-        ENUM consent_type
-        BOOLEAN consent_status
-        TIMESTAMP consent_date
-    }
-    USER_NOTIFICATIONS {
-        SERIAL id PK "PK"
-        UUID user_id FK "FK -> users.id"
-        BOOLEAN email_alert
-        BOOLEAN sms_alert
-        BOOLEAN push_alert
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
     }
 
-    %% Relations
-    SCHOOLS ||--o{ DEPARTMENTS : has
-    SCHOOLS ||--o{ USERS : has
-    SCHOOLS ||--o{ BOARDS : has
+    chat_sessions {
+        UUID id PK
+        VARCHAR title
+        TIMESTAMP last_message_at
+        INT message_count
+    }
 
-    DEPARTMENTS ||--o{ USERS : has
-
-    BOARDS ||--o{ POSTS : has
-    USERS ||--o{ POSTS : writes
-
-    POSTS ||--o{ COMMENTS : has
-    USERS ||--o{ COMMENTS : writes
-
-    POSTS ||--o{ POST_LIKES : liked_in
-    USERS ||--o{ POST_LIKES : likes
-
-    COMMENTS ||--o{ COMMENT_LIKES : liked_in
-    USERS ||--o{ COMMENT_LIKES : likes
-
-    USERS ||--o{ USER_CONSENTS : gives
-    USERS ||--o{ USER_NOTIFICATIONS : has
-
-    USERS ||--o{ CHAT_SESSIONS : owns
-    CHAT_SESSIONS ||--o{ CHAT_LOGS : has
+    %% Relationships
+    files ||--o{ users : "uploader_id"
+    post_files ||--o{ posts : "post_id"
+    post_files ||--o{ files : "file_id"
+    notifications ||--o{ users : "user_id"
+    reports ||--o{ users : "reporter_id"
+    reports ||--o{ users : "handler_id"
+    post_tags ||--o{ posts : "post_id"
+    post_tags ||--o{ tags : "tag_id"
+    user_activity_logs ||--o{ users : "user_id"
