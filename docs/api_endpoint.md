@@ -18,7 +18,7 @@
 | Method | Endpoint | 설명 | Request Body | Response |
 | --- | --- | --- | --- | --- |
 | `GET` | `/api/users/me` | 내 정보 조회 | - | `{user}` |
-| `PATCH` | `/api/users/me` | 내 정보 수정 | `{nickname?, birthDate?, gender?}` | `{user}` |
+| `PATCH` | `/api/users/me` | 내 정보 수정 | `{nickname?, birthDate?, gender?, profile_image_url?, bio?}` | `{user}` |
 | `DELETE` | `/api/users/me` | 회원탈퇴 | `{password}` | `{deleted}` |
 | `GET` | `/api/users/me/stats` | 내 활동 통계 | - | `{postsCount, commentsCount, likesCount}` |
 
