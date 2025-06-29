@@ -8,7 +8,7 @@ erDiagram
 
     DEPARTMENTS {
         SERIAL id PK "PK"
-        INT school_id FK "FK -> schools.id"
+        INT school_id FK "FK to SCHOOLS"
         VARCHAR name "학과명"
     }
 
@@ -17,8 +17,8 @@ erDiagram
         VARCHAR email "이메일"
         VARCHAR password "비밀번호"
         VARCHAR nickname "닉네임"
-        INT school_id FK "FK -> schools.id"
-        INT department_id FK "FK -> departments.id"
+        INT school_id FK "FK to SCHOOLS"
+        INT department_id FK "FK to DEPARTMENTS"
         ENUM role "권한"
         ENUM status "상태"
         DATE birth_date
@@ -37,7 +37,7 @@ erDiagram
 
     USER_CONSENTS {
         SERIAL id PK "PK"
-        UUID user_id FK "FK -> users.id"
+        UUID user_id FK "FK to USERS"
         ENUM consent_type
         BOOLEAN consent_status
         TIMESTAMP consent_date
@@ -45,7 +45,7 @@ erDiagram
 
     USER_NOTIFICATIONS {
         SERIAL id PK "PK"
-        UUID user_id FK "FK -> users.id"
+        UUID user_id FK "FK to USERS"
         BOOLEAN email_alert
         BOOLEAN sms_alert
         BOOLEAN push_alert
@@ -55,7 +55,7 @@ erDiagram
 
     BOARDS {
         SERIAL id PK "PK"
-        INT school_id FK "FK -> schools.id"
+        INT school_id FK "FK to SCHOOLS"
         VARCHAR name
         TEXT description
         BOOLEAN is_public
@@ -64,8 +64,8 @@ erDiagram
 
     POSTS {
         UUID id PK "PK"
-        INT board_id FK "FK -> boards.id"
-        UUID user_id FK "FK -> users.id"
+        INT board_id FK "FK to BOARDS"
+        UUID user_id FK "FK to USERS"
         VARCHAR title
         TEXT content
         BOOLEAN anonymous_flag
@@ -81,9 +81,9 @@ erDiagram
 
     COMMENTS {
         UUID id PK "PK"
-        UUID post_id FK "FK -> posts.id"
-        UUID user_id FK "FK -> users.id"
-        UUID parent_comment_id FK "FK -> comments.id"
+        UUID post_id FK "FK to POSTS"
+        UUID user_id FK "FK to USERS"
+        UUID parent_comment_id FK "FK to COMMENTS"
         TEXT content
         BOOLEAN anonymous_flag
         VARCHAR anonymous_nickname
@@ -93,21 +93,21 @@ erDiagram
 
     POST_LIKES {
         SERIAL id PK "PK"
-        UUID post_id FK "FK -> posts.id"
-        UUID user_id FK "FK -> users.id"
+        UUID post_id FK "FK to POSTS"
+        UUID user_id FK "FK to USERS"
         TIMESTAMP created_at
     }
 
     COMMENT_LIKES {
         SERIAL id PK "PK"
-        UUID comment_id FK "FK -> comments.id"
-        UUID user_id FK "FK -> users.id"
+        UUID comment_id FK "FK to COMMENTS"
+        UUID user_id FK "FK to USERS"
         TIMESTAMP created_at
     }
 
     CHAT_SESSIONS {
         UUID id PK "PK"
-        UUID user_id FK "FK -> users.id"
+        UUID user_id FK "FK to USERS"
         VARCHAR title
         TIMESTAMP created_at
         TIMESTAMP last_message_at
@@ -116,7 +116,7 @@ erDiagram
 
     CHAT_LOGS {
         UUID id PK "PK"
-        UUID session_id FK "FK -> chat_sessions.id"
+        UUID session_id FK "FK to CHAT_SESSIONS"
         TEXT question
         TEXT answer
         TEXT summary
@@ -126,7 +126,7 @@ erDiagram
 
     FILES {
         UUID id PK "PK"
-        UUID uploader_id FK "FK -> users.id"
+        UUID uploader_id FK "FK to USERS"
         VARCHAR original_name
         VARCHAR stored_name
         BIGINT file_size
@@ -138,14 +138,14 @@ erDiagram
 
     POST_FILES {
         SERIAL id PK "PK"
-        UUID post_id FK "FK -> posts.id"
-        UUID file_id FK "FK -> files.id"
+        UUID post_id FK "FK to POSTS"
+        UUID file_id FK "FK to FILES"
         INT sort_order
     }
 
     NOTIFICATIONS {
         UUID id PK "PK"
-        UUID user_id FK "FK -> users.id"
+        UUID user_id FK "FK to USERS"
         ENUM type
         VARCHAR title
         TEXT content
@@ -158,12 +158,12 @@ erDiagram
 
     REPORTS {
         UUID id PK "PK"
-        UUID reporter_id FK "FK -> users.id"
+        UUID reporter_id FK "FK to USERS"
         ENUM target_type
         UUID target_id
         TEXT reason
         ENUM status
-        UUID handled_by FK "FK -> users.id"
+        UUID handled_by FK "FK to USERS"
         TIMESTAMP handled_at
         TIMESTAMP created_at
     }
@@ -177,13 +177,13 @@ erDiagram
 
     POST_TAGS {
         SERIAL id PK "PK"
-        UUID post_id FK "FK -> posts.id"
-        INT tag_id FK "FK -> tags.id"
+        UUID post_id FK "FK to POSTS"
+        INT tag_id FK "FK to TAGS"
     }
 
     USER_ACTIVITY_LOGS {
         UUID id PK "PK"
-        UUID user_id FK "FK -> users.id"
+        UUID user_id FK "FK to USERS"
         ENUM action_type
         UUID target_id
         JSONB metadata
