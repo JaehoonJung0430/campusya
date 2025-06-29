@@ -190,20 +190,17 @@
 
 ### 📁 파일 정보 / `files`
 
-\| 논리 필드명       | 물리 필드명     | 도메인          | 타입      | NULL 유무 | 기본값 | 코멘트                 |
-\|------------------|----------------|
-
-
-\-----------------|-----------|-----------|--------|------------------------|
-\| 파일 ID          | id             | 식별자          | UUID      | NOT NULL  |        | PK                     |
-\| 업로더 ID        | uploader\_id    | 외래키          | UUID      | NOT NULL  |        | FK -> users.id         |
-\| 원본 파일명      | original\_name  | 문자열          | VARCHAR   | NOT NULL  |        |                        |
-\| 저장 파일명      | stored\_name    | 문자열          | VARCHAR   | NOT NULL  |        | 실제 저장된 파일명     |
-\| 파일 크기        | file\_size      | 바이트          | BIGINT    | NOT NULL  |        |                        |
-\| MIME 타입        | mime\_type      | 문자열          | VARCHAR   | NOT NULL  |        | ex: image/png          |
-\| 저장 URL         | s3\_url         | URL             | VARCHAR   | NOT NULL  |        | AWS S3 URL 등           |
-\| 파일 타입        | file\_type      | ENUM            | ENUM('IMAGE','DOCUMENT','VIDEO','AUDIO','OTHER') | NOT NULL | 'OTHER' |  |
-\| 업로드일시       | created\_at     | TIMESTAMP       | TIMESTAMP | NOT NULL  | now()  |                        |
+| 논리 필드명 | 물리 필드명 | 도메인 | 타입 | NULL 유무 | 기본값 | 코멘트 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 파일 ID | id | 식별자 | UUID | NOT NULL |  | PK |
+| 업로더 ID | uploader_id | 외래키 | UUID | NOT NULL |  | FK -> users.id |
+| 원본 파일명 | original_name | 문자열 | VARCHAR | NOT NULL |  |  |
+| 저장 파일명 | stored_name | 문자열 | VARCHAR | NOT NULL |  | 실제 저장된 파일명 |
+| 파일 크기 | file_size | 바이트 | BIGINT | NOT NULL |  |  |
+| MIME 타입 | mime_type | 문자열 | VARCHAR | NOT NULL |  | ex: image/png |
+| 저장 URL | s3_url | URL | VARCHAR | NOT NULL |  | AWS S3 URL 등 |
+| 파일 타입 | file_type | ENUM | ENUM('IMAGE','DOCUMENT','VIDEO','AUDIO','OTHER') | NOT NULL | 'OTHER' |  |
+| 업로드일시 | created_at | TIMESTAMP | TIMESTAMP | NOT NULL | now() |  |
 
 ---
 
