@@ -70,41 +70,6 @@ campusya/
 
 ---
 
-## 🚀 실행 방법 (Codespaces 기준)
-
-### ✅ 1. PostgreSQL 설치 및 초기화
-
-```bash
-bash ./setup-scripts/setup-db.sh
-```
-
-* DB 이름: `campusya_db`
-* 사용자: `campusya_user`
-* 비밀번호: `campusya_pass`
-
-자동으로 PostgreSQL을 설치하고, 사용자 및 DB를 생성합니다.
-
-### ✅ 2. 백엔드 실행
-
-```bash
-cd backend
-./gradlew bootRun
-```
-
-* `application.yml`에서 DB 설정을 확인하세요.
-
-### ✅ 3. 프론트엔드 앱 실행 (Expo)
-
-```bash
-cd frontend
-npm install
-npx expo start
-```
-
-* Expo Go 앱으로 QR코드 스캔하여 모바일 테스트 가능
-
----
-
 ## 🗂 환경 변수 예시
 
 > `.env` 또는 `application.yml`에 사용

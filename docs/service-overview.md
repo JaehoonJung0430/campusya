@@ -131,26 +131,6 @@
     
     ---
     
-    ## ✅ 보너스: 프로젝트 루트 구조 (권장)
-    
-    ```
-    bash
-    복사편집
-    campusya/
-    ├── backend/               # Spring Boot + PostgreSQL
-    │   └── src/main/resources/application.yml
-    ├── frontend/              # React Native (Expo)
-    │   └── app/...
-    ├── crawler/               # Python 크롤링 코드
-    ├── .github/workflows/     # GitHub Actions
-    ├── docker/                # Docker 설정
-    │   └── backend.Dockerfile
-    ├── README.md
-    └── setup-scripts/         # 초기 셸 스크립트
-    
-    ```
-    
-    ---
     
 - 1차 MVP 디자인 목업
     
