@@ -1,17 +1,132 @@
 erDiagram
-    users {
-        UUID id PK
+    SCHOOLS {
+        SERIAL id PK "PK"
+        VARCHAR name "학교명"
+        VARCHAR campus "캠퍼스명"
+        VARCHAR domain "이메일 도메인"
+    }
+
+    DEPARTMENTS {
+        SERIAL id PK "PK"
+        INT school_id FK "FK -> schools.id"
+        VARCHAR name "학과명"
+    }
+
+    USERS {
+        UUID id PK "PK"
+        VARCHAR email "이메일"
+        VARCHAR password "비밀번호"
+        VARCHAR nickname "닉네임"
+        INT school_id FK "FK -> schools.id"
+        INT department_id FK "FK -> departments.id"
+        ENUM role "권한"
+        ENUM status "상태"
+        DATE birth_date
+        ENUM gender
+        SMALLINT admission_year
+        VARCHAR student_number
         BOOLEAN email_verified
         VARCHAR profile_image_url
         TEXT bio
         TIMESTAMP last_login_at
         TIMESTAMP ban_until
         TEXT ban_reason
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
-    files {
-        UUID id PK
-        UUID uploader_id FK
+    USER_CONSENTS {
+        SERIAL id PK "PK"
+        UUID user_id FK "FK -> users.id"
+        ENUM consent_type
+        BOOLEAN consent_status
+        TIMESTAMP consent_date
+    }
+
+    USER_NOTIFICATIONS {
+        SERIAL id PK "PK"
+        UUID user_id FK "FK -> users.id"
+        BOOLEAN email_alert
+        BOOLEAN sms_alert
+        BOOLEAN push_alert
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    BOARDS {
+        SERIAL id PK "PK"
+        INT school_id FK "FK -> schools.id"
+        VARCHAR name
+        TEXT description
+        BOOLEAN is_public
+        INT sort_order
+    }
+
+    POSTS {
+        UUID id PK "PK"
+        INT board_id FK "FK -> boards.id"
+        UUID user_id FK "FK -> users.id"
+        VARCHAR title
+        TEXT content
+        BOOLEAN anonymous_flag
+        VARCHAR anonymous_nickname
+        INT likes_count
+        INT view_count
+        INT comment_count
+        ENUM status
+        BOOLEAN is_pinned
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    COMMENTS {
+        UUID id PK "PK"
+        UUID post_id FK "FK -> posts.id"
+        UUID user_id FK "FK -> users.id"
+        UUID parent_comment_id FK "FK -> comments.id"
+        TEXT content
+        BOOLEAN anonymous_flag
+        VARCHAR anonymous_nickname
+        INT likes_count
+        TIMESTAMP created_at
+    }
+
+    POST_LIKES {
+        SERIAL id PK "PK"
+        UUID post_id FK "FK -> posts.id"
+        UUID user_id FK "FK -> users.id"
+        TIMESTAMP created_at
+    }
+
+    COMMENT_LIKES {
+        SERIAL id PK "PK"
+        UUID comment_id FK "FK -> comments.id"
+        UUID user_id FK "FK -> users.id"
+        TIMESTAMP created_at
+    }
+
+    CHAT_SESSIONS {
+        UUID id PK "PK"
+        UUID user_id FK "FK -> users.id"
+        VARCHAR title
+        TIMESTAMP created_at
+        TIMESTAMP last_message_at
+        INT message_count
+    }
+
+    CHAT_LOGS {
+        UUID id PK "PK"
+        UUID session_id FK "FK -> chat_sessions.id"
+        TEXT question
+        TEXT answer
+        TEXT summary
+        JSONB source
+        TIMESTAMP created_at
+    }
+
+    FILES {
+        UUID id PK "PK"
+        UUID uploader_id FK "FK -> users.id"
         VARCHAR original_name
         VARCHAR stored_name
         BIGINT file_size
@@ -21,24 +136,16 @@ erDiagram
         TIMESTAMP created_at
     }
 
-    post_files {
-        SERIAL id PK
-        UUID post_id FK
-        UUID file_id FK
+    POST_FILES {
+        SERIAL id PK "PK"
+        UUID post_id FK "FK -> posts.id"
+        UUID file_id FK "FK -> files.id"
         INT sort_order
     }
 
-    posts {
-        UUID id PK
-        INT view_count
-        INT comment_count
-        ENUM status
-        BOOLEAN is_pinned
-    }
-
-    notifications {
-        UUID id PK
-        UUID user_id FK
+    NOTIFICATIONS {
+        UUID id PK "PK"
+        UUID user_id FK "FK -> users.id"
         ENUM type
         VARCHAR title
         TEXT content
@@ -49,56 +156,65 @@ erDiagram
         TIMESTAMP read_at
     }
 
-    reports {
-        UUID id PK
-        UUID reporter_id FK
-        UUID target_id
+    REPORTS {
+        UUID id PK "PK"
+        UUID reporter_id FK "FK -> users.id"
         ENUM target_type
-        ENUM reason
-        TEXT description
+        UUID target_id
+        TEXT reason
         ENUM status
-        UUID handler_id FK
-        TEXT resolution
+        UUID handled_by FK "FK -> users.id"
+        TIMESTAMP handled_at
         TIMESTAMP created_at
-        TIMESTAMP resolved_at
     }
 
-    tags {
-        SERIAL id PK
-        VARCHAR name UNIQUE
+    TAGS {
+        SERIAL id PK "PK"
+        VARCHAR name
         INT usage_count
         TIMESTAMP created_at
     }
 
-    post_tags {
-        SERIAL id PK
-        UUID post_id FK
-        INT tag_id FK
+    POST_TAGS {
+        SERIAL id PK "PK"
+        UUID post_id FK "FK -> posts.id"
+        INT tag_id FK "FK -> tags.id"
     }
 
-    user_activity_logs {
-        UUID id PK
-        UUID user_id FK
+    USER_ACTIVITY_LOGS {
+        UUID id PK "PK"
+        UUID user_id FK "FK -> users.id"
         ENUM action_type
         UUID target_id
         JSONB metadata
         TIMESTAMP created_at
     }
 
-    chat_sessions {
-        UUID id PK
-        VARCHAR title
-        TIMESTAMP last_message_at
-        INT message_count
-    }
+    %% 관계 정의
 
-    %% Relationships
-    files ||--o{ users : "uploader_id"
-    post_files ||--o{ posts : "post_id"
-    post_files ||--o{ files : "file_id"
-    notifications ||--o{ users : "user_id"
-    reports ||--o{ users : "reporter_id"
-    reports ||--o{ users : "handler_id"
-    post_tags ||--o{ posts : "post_id"
-    post_tags ||--o{ tags : "tag_id"
-    user_activity_logs ||--o{ users : "user_id"
+    DEPARTMENTS.school_id }|--|| SCHOOLS.id
+    USERS.school_id }|--|| SCHOOLS.id
+    USERS.department_id }|--|| DEPARTMENTS.id
+    USER_CONSENTS.user_id }|--|| USERS.id
+    USER_NOTIFICATIONS.user_id }|--|| USERS.id
+    BOARDS.school_id }|--|| SCHOOLS.id
+    POSTS.board_id }|--|| BOARDS.id
+    POSTS.user_id }|--|| USERS.id
+    COMMENTS.post_id }|--|| POSTS.id
+    COMMENTS.user_id }|--|| USERS.id
+    COMMENTS.parent_comment_id }|--|| COMMENTS.id
+    POST_LIKES.post_id }|--|| POSTS.id
+    POST_LIKES.user_id }|--|| USERS.id
+    COMMENT_LIKES.comment_id }|--|| COMMENTS.id
+    COMMENT_LIKES.user_id }|--|| USERS.id
+    CHAT_SESSIONS.user_id }|--|| USERS.id
+    CHAT_LOGS.session_id }|--|| CHAT_SESSIONS.id
+    FILES.uploader_id }|--|| USERS.id
+    POST_FILES.post_id }|--|| POSTS.id
+    POST_FILES.file_id }|--|| FILES.id
+    NOTIFICATIONS.user_id }|--|| USERS.id
+    REPORTS.reporter_id }|--|| USERS.id
+    REPORTS.handled_by }|--|| USERS.id
+    POST_TAGS.post_id }|--|| POSTS.id
+    POST_TAGS.tag_id }|--|| TAGS.id
+    USER_ACTIVITY_LOGS.user_id }|--|| USERS.id
