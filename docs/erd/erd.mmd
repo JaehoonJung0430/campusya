@@ -1,220 +1,219 @@
 erDiagram
     SCHOOLS {
-        SERIAL id PK "PK"
+        SERIAL id PK "고유 ID"
         VARCHAR name "학교명"
-        VARCHAR campus "캠퍼스명"
+        VARCHAR campus "캠퍼스"
         VARCHAR domain "이메일 도메인"
     }
 
     DEPARTMENTS {
-        SERIAL id PK "PK"
-        INT school_id FK "FK to SCHOOLS"
+        SERIAL id PK "고유 ID"
+        INT school_id FK "소속 학교 ID"
         VARCHAR name "학과명"
     }
 
     USERS {
-        UUID id PK "PK"
+        UUID id PK "사용자 ID"
         VARCHAR email "이메일"
         VARCHAR password "비밀번호"
         VARCHAR nickname "닉네임"
-        INT school_id FK "FK to SCHOOLS"
-        INT department_id FK "FK to DEPARTMENTS"
+        INT school_id FK "학교 ID"
+        INT department_id FK "학과 ID"
         ENUM role "권한"
         ENUM status "상태"
-        DATE birth_date
-        ENUM gender
-        SMALLINT admission_year
-        VARCHAR student_number
-        BOOLEAN email_verified
-        VARCHAR profile_image_url
-        TEXT bio
-        TIMESTAMP last_login_at
-        TIMESTAMP ban_until
-        TEXT ban_reason
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        DATE birth_date "생년월일"
+        ENUM gender "성별"
+        SMALLINT admission_year "입학 연도"
+        VARCHAR student_number "학번"
+        BOOLEAN email_verified "이메일 인증 여부"
+        VARCHAR profile_image_url "프로필 이미지 URL"
+        TEXT bio "자기소개"
+        TIMESTAMP last_login_at "마지막 로그인"
+        TIMESTAMP ban_until "정지 종료일"
+        TEXT ban_reason "정지 사유"
+        TIMESTAMP created_at "가입일시"
+        TIMESTAMP updated_at "수정일시"
     }
 
     USER_CONSENTS {
-        SERIAL id PK "PK"
-        UUID user_id FK "FK to USERS"
-        ENUM consent_type
-        BOOLEAN consent_status
-        TIMESTAMP consent_date
+        SERIAL id PK "동의 ID"
+        UUID user_id FK "사용자 ID"
+        ENUM consent_type "동의 유형"
+        BOOLEAN consent_status "동의 상태"
+        TIMESTAMP consent_date "동의 일시"
     }
 
     USER_NOTIFICATIONS {
-        SERIAL id PK "PK"
-        UUID user_id FK "FK to USERS"
-        BOOLEAN email_alert
-        BOOLEAN sms_alert
-        BOOLEAN push_alert
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        SERIAL id PK "설정 ID"
+        UUID user_id FK "사용자 ID"
+        BOOLEAN email_alert "이메일 알림"
+        BOOLEAN sms_alert "SMS 알림"
+        BOOLEAN push_alert "푸시 알림"
+        TIMESTAMP created_at "생성일시"
+        TIMESTAMP updated_at "수정일시"
     }
 
     BOARDS {
-        SERIAL id PK "PK"
-        INT school_id FK "FK to SCHOOLS"
-        VARCHAR name
-        TEXT description
-        BOOLEAN is_public
-        INT sort_order
+        SERIAL id PK "게시판 ID"
+        INT school_id FK "학교 ID"
+        VARCHAR name "게시판명"
+        TEXT description "설명"
+        BOOLEAN is_public "공개 여부"
+        INT sort_order "정렬 우선순위"
     }
 
     POSTS {
-        UUID id PK "PK"
-        INT board_id FK "FK to BOARDS"
-        UUID user_id FK "FK to USERS"
-        VARCHAR title
-        TEXT content
-        BOOLEAN anonymous_flag
-        VARCHAR anonymous_nickname
-        INT likes_count
-        INT view_count
-        INT comment_count
-        ENUM status
-        BOOLEAN is_pinned
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        UUID id PK "게시글 ID"
+        INT board_id FK "게시판 ID"
+        UUID user_id FK "작성자 ID"
+        VARCHAR title "제목"
+        TEXT content "본문"
+        BOOLEAN anonymous_flag "익명 여부"
+        VARCHAR anonymous_nickname "익명 닉네임"
+        INT likes_count "좋아요 수"
+        INT view_count "조회수"
+        INT comment_count "댓글 수"
+        ENUM status "상태"
+        BOOLEAN is_pinned "고정 여부"
+        TIMESTAMP created_at "작성일시"
+        TIMESTAMP updated_at "수정일시"
     }
 
     COMMENTS {
-        UUID id PK "PK"
-        UUID post_id FK "FK to POSTS"
-        UUID user_id FK "FK to USERS"
-        UUID parent_comment_id FK "FK to COMMENTS"
-        TEXT content
-        BOOLEAN anonymous_flag
-        VARCHAR anonymous_nickname
-        INT likes_count
-        TIMESTAMP created_at
+        UUID id PK "댓글 ID"
+        UUID post_id FK "게시글 ID"
+        UUID user_id FK "작성자 ID"
+        UUID parent_comment_id FK "부모 댓글 ID"
+        TEXT content "내용"
+        BOOLEAN anonymous_flag "익명 여부"
+        VARCHAR anonymous_nickname "익명 닉네임"
+        INT likes_count "좋아요 수"
+        TIMESTAMP created_at "작성일시"
     }
 
     POST_LIKES {
-        SERIAL id PK "PK"
-        UUID post_id FK "FK to POSTS"
-        UUID user_id FK "FK to USERS"
-        TIMESTAMP created_at
+        SERIAL id PK "고유 ID"
+        UUID post_id FK "게시글 ID"
+        UUID user_id FK "사용자 ID"
+        TIMESTAMP created_at "좋아요 일시"
     }
 
     COMMENT_LIKES {
-        SERIAL id PK "PK"
-        UUID comment_id FK "FK to COMMENTS"
-        UUID user_id FK "FK to USERS"
-        TIMESTAMP created_at
+        SERIAL id PK "고유 ID"
+        UUID comment_id FK "댓글 ID"
+        UUID user_id FK "사용자 ID"
+        TIMESTAMP created_at "좋아요 일시"
     }
 
     CHAT_SESSIONS {
-        UUID id PK "PK"
-        UUID user_id FK "FK to USERS"
-        VARCHAR title
-        TIMESTAMP created_at
-        TIMESTAMP last_message_at
-        INT message_count
+        UUID id PK "세션 ID"
+        UUID user_id FK "사용자 ID"
+        VARCHAR title "세션 제목"
+        TIMESTAMP created_at "생성일시"
+        TIMESTAMP last_message_at "마지막 메시지 시각"
+        INT message_count "메시지 수"
     }
 
     CHAT_LOGS {
-        UUID id PK "PK"
-        UUID session_id FK "FK to CHAT_SESSIONS"
-        TEXT question
-        TEXT answer
-        TEXT summary
-        JSONB source
-        TIMESTAMP created_at
+        UUID id PK "대화 로그 ID"
+        UUID session_id FK "세션 ID"
+        TEXT question "질문"
+        TEXT answer "응답"
+        TEXT summary "요약 응답"
+        JSONB source "출처"
+        TIMESTAMP created_at "생성일시"
     }
 
     FILES {
-        UUID id PK "PK"
-        UUID uploader_id FK "FK to USERS"
-        VARCHAR original_name
-        VARCHAR stored_name
-        BIGINT file_size
-        VARCHAR mime_type
-        VARCHAR s3_url
-        ENUM file_type
-        TIMESTAMP created_at
+        UUID id PK "파일 ID"
+        UUID uploader_id FK "업로더 ID"
+        VARCHAR original_name "원본 파일명"
+        VARCHAR stored_name "저장 파일명"
+        BIGINT file_size "파일 크기"
+        VARCHAR mime_type "MIME 타입"
+        VARCHAR s3_url "저장 URL"
+        ENUM file_type "파일 타입"
+        TIMESTAMP created_at "업로드일시"
     }
 
     POST_FILES {
-        SERIAL id PK "PK"
-        UUID post_id FK "FK to POSTS"
-        UUID file_id FK "FK to FILES"
-        INT sort_order
+        SERIAL id PK "연결 ID"
+        UUID post_id FK "게시글 ID"
+        UUID file_id FK "파일 ID"
+        INT sort_order "정렬 순서"
     }
 
     NOTIFICATIONS {
-        UUID id PK "PK"
-        UUID user_id FK "FK to USERS"
-        ENUM type
-        VARCHAR title
-        TEXT content
-        UUID related_id
-        ENUM related_type
-        BOOLEAN is_read
-        TIMESTAMP created_at
-        TIMESTAMP read_at
+        UUID id PK "알림 ID"
+        UUID user_id FK "수신자 ID"
+        ENUM type "알림 유형"
+        VARCHAR title "제목"
+        TEXT content "내용"
+        UUID related_id "관련 엔티티 ID"
+        ENUM related_type "관련 엔티티 타입"
+        BOOLEAN is_read "읽음 여부"
+        TIMESTAMP created_at "생성일시"
+        TIMESTAMP read_at "읽은 일시"
     }
 
     REPORTS {
-        UUID id PK "PK"
-        UUID reporter_id FK "FK to USERS"
-        ENUM target_type
-        UUID target_id
-        TEXT reason
-        ENUM status
-        UUID handled_by FK "FK to USERS"
-        TIMESTAMP handled_at
-        TIMESTAMP created_at
+        UUID id PK "신고 ID"
+        UUID reporter_id FK "신고자 ID"
+        ENUM target_type "대상 타입"
+        UUID target_id "대상 ID"
+        TEXT reason "신고 사유"
+        ENUM status "처리 상태"
+        UUID handled_by FK "처리자 ID"
+        TIMESTAMP handled_at "처리 일시"
+        TIMESTAMP created_at "신고 생성일시"
     }
 
     TAGS {
-        SERIAL id PK "PK"
-        VARCHAR name
-        INT usage_count
-        TIMESTAMP created_at
+        SERIAL id PK "태그 ID"
+        VARCHAR name "태그명"
+        INT usage_count "사용 횟수"
+        TIMESTAMP created_at "생성일"
     }
 
     POST_TAGS {
-        SERIAL id PK "PK"
-        UUID post_id FK "FK to POSTS"
-        INT tag_id FK "FK to TAGS"
+        SERIAL id PK "연결 ID"
+        UUID post_id FK "게시글 ID"
+        INT tag_id FK "태그 ID"
     }
 
     USER_ACTIVITY_LOGS {
-        UUID id PK "PK"
-        UUID user_id FK "FK to USERS"
-        ENUM action_type
-        UUID target_id
-        JSONB metadata
-        TIMESTAMP created_at
+        UUID id PK "로그 ID"
+        UUID user_id FK "사용자 ID"
+        ENUM action_type "액션 타입"
+        UUID target_id "대상 ID"
+        JSONB metadata "메타데이터"
+        TIMESTAMP created_at "생성일시"
     }
 
-    %% 관계 정의
-
-    DEPARTMENTS.school_id }|--|| SCHOOLS.id
-    USERS.school_id }|--|| SCHOOLS.id
-    USERS.department_id }|--|| DEPARTMENTS.id
-    USER_CONSENTS.user_id }|--|| USERS.id
-    USER_NOTIFICATIONS.user_id }|--|| USERS.id
-    BOARDS.school_id }|--|| SCHOOLS.id
-    POSTS.board_id }|--|| BOARDS.id
-    POSTS.user_id }|--|| USERS.id
-    COMMENTS.post_id }|--|| POSTS.id
-    COMMENTS.user_id }|--|| USERS.id
-    COMMENTS.parent_comment_id }|--|| COMMENTS.id
-    POST_LIKES.post_id }|--|| POSTS.id
-    POST_LIKES.user_id }|--|| USERS.id
-    COMMENT_LIKES.comment_id }|--|| COMMENTS.id
-    COMMENT_LIKES.user_id }|--|| USERS.id
-    CHAT_SESSIONS.user_id }|--|| USERS.id
-    CHAT_LOGS.session_id }|--|| CHAT_SESSIONS.id
-    FILES.uploader_id }|--|| USERS.id
-    POST_FILES.post_id }|--|| POSTS.id
-    POST_FILES.file_id }|--|| FILES.id
-    NOTIFICATIONS.user_id }|--|| USERS.id
-    REPORTS.reporter_id }|--|| USERS.id
-    REPORTS.handled_by }|--|| USERS.id
-    POST_TAGS.post_id }|--|| POSTS.id
-    POST_TAGS.tag_id }|--|| TAGS.id
-    USER_ACTIVITY_LOGS.user_id }|--|| USERS.id
+    %% 관계 (FK)
+    DEPARTMENTS ||--|| SCHOOLS : "school_id"
+    USERS }|--|| SCHOOLS : "school_id"
+    USERS }|--|| DEPARTMENTS : "department_id"
+    USER_CONSENTS }|--|| USERS : "user_id"
+    USER_NOTIFICATIONS }|--|| USERS : "user_id"
+    BOARDS }|--|| SCHOOLS : "school_id"
+    POSTS }|--|| BOARDS : "board_id"
+    POSTS }|--|| USERS : "user_id"
+    COMMENTS }|--|| POSTS : "post_id"
+    COMMENTS }|--|| USERS : "user_id"
+    COMMENTS }|--|| COMMENTS : "parent_comment_id"
+    POST_LIKES }|--|| POSTS : "post_id"
+    POST_LIKES }|--|| USERS : "user_id"
+    COMMENT_LIKES }|--|| COMMENTS : "comment_id"
+    COMMENT_LIKES }|--|| USERS : "user_id"
+    CHAT_SESSIONS }|--|| USERS : "user_id"
+    CHAT_LOGS }|--|| CHAT_SESSIONS : "session_id"
+    FILES }|--|| USERS : "uploader_id"
+    POST_FILES }|--|| POSTS : "post_id"
+    POST_FILES }|--|| FILES : "file_id"
+    NOTIFICATIONS }|--|| USERS : "user_id"
+    REPORTS }|--|| USERS : "reporter_id"
+    REPORTS }|--|| USERS : "handled_by"
+    POST_TAGS }|--|| POSTS : "post_id"
+    POST_TAGS }|--|| TAGS : "tag_id"
+    USER_ACTIVITY_LOGS }|--|| USERS : "user_id"
